@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="#"><img src="https://github.com/pyravi26/fastCLI/blob/main/logo_20230103.png?raw=true" alt="fCLI" /></a>
+    <a href="#"><img src="https://github.com/pyravi26/fastCLI/blob/main/logo_20230103.png?raw=true" alt="fastCLI" width="20%" /></a>
 </p>
 
 ---
