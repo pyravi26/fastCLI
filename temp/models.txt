@@ -1,0 +1,20 @@
+# Generated through FastCLI
+
+from datetime import datetime
+from api.database.db_connection import Base
+from sqlalchemy import Column, Integer, Boolean
+from sqlalchemy.types import DateTime
+
+class ${uc_name}Model(Base):
+    __tablename__ = "${table_namespace}_${name}"
+
+    id = Column(Integer, primary_key=True)
+    # Column 1 Details
+    # Column 2 Details
+    # Column 3 Details
+    # ....
+    # ....
+    # ....
+    rec_status = Column(Boolean, server_default='true')
+    created_at = Column(DateTime(timezone=True), server_default=str(datetime.utcnow()))
+    modified_at = Column(DateTime(timezone=True), onupdate=str(datetime.utcnow()))

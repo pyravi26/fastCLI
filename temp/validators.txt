@@ -1,0 +1,35 @@
+# Generated through FastCLI
+
+from pydantic import BaseModel, Field
+from datetime import datetime
+
+
+class ${uc_name}Create(BaseModel):
+    ${name}_name: str
+    # Column1: Type1
+    # Column2: Type2
+    # Column3: Type3
+    # ....
+    # ....
+
+    class Config:
+        orm_mode = True
+
+
+class ${uc_name}Update(${uc_name}Create):
+    id: int = Field(alias="${name}_id")
+
+
+class ${uc_name}Delete(BaseModel):
+    id: int = Field(alias="${name}_id")
+
+    class Config:
+        orm_mode = True
+
+
+
+class ${uc_name}List(${uc_name}Create):
+    id: int = Field(alias="${name}_id")
+    rec_status: str | int = Field(alias="status")
+    created_at: datetime | str | None = None
+    modified_at: datetime | str | None = None

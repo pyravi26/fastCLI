@@ -1,0 +1,67 @@
+import math
+from os import environ
+from fastapi import requests
+from sqlalchemy.orm import Session
+from api.lib.core.validators.base_validator import *
+
+
+class _page_information(object):
+    limit: int = environ.get('PER_PAGE', default=20)
+    offset: int = 0
+    page: int = environ.get('CURR_PAGE', default=1)
+    row_count: int = 0
+
+    def __dict__(self):
+        return dict(
+            current_page=self.page,
+            total_pages=math.ceil(self.row_count/self.limit),
+            page_limit=self.limit
+        )
+
+
+class ${uc_name}Controller(object):
+
+    def __init__(self, req: requests, DB: Session, tables: list):
+        self._request = req
+        self._db = DB
+        self._tables = tables
+        self.__page_info = _page_information()
+
+        self._response = SendResponse()
+
+
+    @property
+    def get_page_information(self):
+        return self.__page_info.__dict__()
+
+    
+    def setPageNo(self, curr_page: int):
+        self.__page_info.page = curr_page
+        if self.__page_info.page > 1:
+            self.__page_info.offset = (self.__page_info.limit * (self.__page_info.page - 1))
+
+
+    def setLimit(self, per_page: int):
+        if self.__page_info.offset == 0:
+            self.__page_info.limit = per_page
+
+
+    def send_error(self, msg: str | list) -> SendResponse:
+        self._response.message = msg
+        self._response.type = ResponseType.ERROR
+        self._response.status = HTTPStatus.BAD_REQUEST
+
+        return self._response
+
+
+    def send_success(self, data: dict | list = None, msg: str = None, show_page_info: bool = False, code = HTTPStatus.OK) -> SendResponse:
+        self._response.data = data
+        self._response.message = msg
+        if show_page_info is True:
+            self._response.pageinfo = self.get_page_information
+        
+        self._response.type = ResponseType.SUCCESS
+        self._response.status = code
+
+        return self._response
+    

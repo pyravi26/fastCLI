@@ -1,0 +1,49 @@
+# Generated through Fastapi-CLI
+
+
+from http import HTTPStatus
+from fastapi import Request
+from sqlalchemy.orm import Session
+from api.lib.core.base_controller import BaseController
+from api.lib.core.validators.base_validator import SendResponse
+
+
+class ${uc_name}Controller(BaseController):
+
+    def __init__(self, req: Request, DB: Session, tables: list):
+        super().__init__(req, DB, tables)
+
+
+    def get_list(self, page_no: int, limit: int) -> SendResponse:
+        self.setPageNo(page_no)
+        self.setLimit(limit)
+
+        '''
+            Your Implementation to Get List
+        '''
+
+        return self.send_success([], show_page_info=True)
+
+
+    def create(self, post_data: dict) -> SendResponse:
+        '''
+            Your Implementaion to Save Data
+        '''
+
+        return self.send_success(msg="Your Data Is Saved.", code=HTTPStatus.CREATED)
+
+    
+    def update(self, put_data: dict) -> SendResponse:
+        '''
+            Your Implementaion to Update Data
+        '''
+
+        return self.send_success(msg="Your Data Is Updated.")
+    
+
+    def delete(self, del_data: dict) -> SendResponse:
+        '''
+            Your Implementaion to Delete Data
+        '''
+
+        return self.send_success(msg="Your Data Is Deleted.")

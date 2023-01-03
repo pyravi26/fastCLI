@@ -1,0 +1,6 @@
+.keys/*
+.environment/*
+templates
+fast*.sh
+__pycache__
+fcli

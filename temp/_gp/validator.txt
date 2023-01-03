@@ -1,0 +1,22 @@
+import enum
+from http import HTTPStatus
+from pydantic import BaseModel
+
+
+class ResponseType(enum.Enum):
+    SUCCESS: str = "Success"
+    ERROR: str = "Error"
+
+
+class PageInformation(BaseModel):
+    current_page: int
+    total_pages: int
+    page_limit: int
+
+
+class SendResponse(BaseModel):
+    data: dict | list | None = None
+    message: str | list | None = None
+    pageinfo: PageInformation | None = None
+    type: ResponseType = ResponseType.SUCCESS
+    status: HTTPStatus = HTTPStatus.OK

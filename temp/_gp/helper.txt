@@ -1,0 +1,51 @@
+import os, sys
+
+def get_env_value(env_label: str) -> str | int | None:
+    val = None
+    if env_label in os.environ and os.environ.get(env_label) is not None:
+        val = os.environ.get(env_label, None)
+    else:
+        raise EnvironmentError(f"Please declare environment variable {env_label}")    
+
+    return val
+
+
+def ImporterList(base_path: str, suffix_name: str = None, excludes: list = []) -> list:
+    # Get list of modules loaded
+    modules = list(sys.modules.keys())
+
+    mymodules = []
+
+    # Get current dir
+    if suffix_name is not None:
+        curdir = os.path.realpath(os.path.dirname(base_path) + (suffix_name if suffix_name.startswith('/') else f"/{suffix_name}"))
+    else:
+        curdir = os.path.realpath(os.path.dirname(base_path))
+
+    for m in modules:
+        try:
+            # if some module's file path located in current folder or in some subfolder
+            # lets sey, that it's our self-made module
+            path = os.path.abspath(sys.modules[m].__file__)
+            if (
+                path.startswith(curdir) and 
+                (
+                    (excludes is None) or 
+                    (
+                        excludes is not None and 
+                        (
+                            (isinstance(excludes, str) and m != excludes) or 
+                            (isinstance(excludes, list) and m not in excludes)
+                        )
+                    )    
+                )
+            ):
+                mymodules.append(m)
+            
+        except Exception:
+        # Exception could happen if module doesn't have any __file__ property
+            pass
+
+    # Return list of our moudles
+    return mymodules
+ 

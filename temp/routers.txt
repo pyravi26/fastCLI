@@ -1,0 +1,71 @@
+# Generated through FastCLI
+
+from fastapi import APIRouter, Request, Depends
+from api.controllers.${name}_controller import ${uc_name}Controller
+from api.database.models.${name}_model import ${uc_name}Model
+from api.database.validators.${name}_validator import *
+from api.lib.core.validators.base_validator import SendResponse
+from api.database.db_connection import get_connection
+
+from sqlalchemy.orm import Session
+
+${name}_router = APIRouter()
+
+def router() -> APIRouter:
+    return ${name}_router
+
+
+@${name}_router.get('/${name}/list', tags=["${uc_name}s"], response_model=SendResponse)
+def ${name}_list(req: Request, page_no: int, limit: int, db: Session = Depends(get_connection)):
+    resp: SendResponse = None
+    ctrl = ${uc_name}Controller(req, db, [${uc_name}Model])
+
+    try:
+        resp = ctrl.get_list(page_no, limit)
+
+    except Exception as e:
+        resp = ctrl.send_error(e.args[0])
+
+    return resp
+
+
+@${name}_router.post('/${name}', tags=["${uc_name}s"], response_model=SendResponse)
+def ${name}_create(req: Request, ${name}: ${uc_name}Create, db: Session = Depends(get_connection)):
+    resp: SendResponse = None
+    ctrl = ${uc_name}Controller(req, db, [${uc_name}Model])
+
+    try:
+        resp = ctrl.create(${name})
+
+    except Exception as e:
+        resp = ctrl.send_error(e.args[0])
+
+    return resp
+
+
+@${name}_router.put('/${name}', tags=["${uc_name}s"], response_model=SendResponse)
+def ${name}_update(req: Request, ${name}: ${uc_name}Update, db: Session = Depends(get_connection)):
+    resp: SendResponse = None
+    ctrl = ${uc_name}Controller(req, db, [${uc_name}Model])
+
+    try:
+        resp = ctrl.update(${name})
+
+    except Exception as e:
+        resp = ctrl.send_error(e.args[0])
+
+    return resp
+
+
+@${name}_router.delete('/${name}', tags=["${uc_name}s"], response_model=SendResponse)
+def ${name}_list(req: Request, ${name}_id: ${uc_name}Delete, db: Session = Depends(get_connection)):
+    resp: SendResponse = None
+    ctrl = ${uc_name}Controller(req, db, [${uc_name}Model])
+
+    try:
+        resp = ctrl.delete(${name}_id)
+
+    except Exception as e:
+        resp = ctrl.send_error(e.args[0])
+
+    return resp
