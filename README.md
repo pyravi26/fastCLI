@@ -58,11 +58,11 @@ cd fastCLI
 - Run the following command
 
 ```
-./setup.sh 
+./setup.sh $0
 
 or
 
-sh setup.sh
+sh setup.sh $0
 ```
 
 This will setup the fCLI and verify it by showing the help topic of this command.
@@ -74,7 +74,17 @@ fastCLI gp <PROJECT_NAME> --namespace=<PROJECT_NAMESPACE>
 ```
 This will create the directory $HOME/Repos/YOUR_PROJECT_NAME
 
-- Run the application:
+- Before run application you need to do some settings. To do settings go to directory $HOME/Repos/YOUR_PROJECT_NAME and open file  <PROJECT_NAMESPACE>.sh. In this file you have found multiple **export** and **<YOUR_DATABASE_*>**. Please replace **<YOUR_DATABASE_*>** with appropriate value/s:
+
+```
+export DB_NAME='<YOUR_DATABASE_NAME>'
+export DB_HOST='<YOUR_DATABASE_HOST>'
+export DB_PORT='<YOUR_DATABASE_PORT>'
+export DB_USER='<YOUR_DATABASE_USER_NAME>'
+export DB_PASS='<YOUR_DATABASE_PASSWORD>'
+```
+
+- To run the application:
 
 ```
 cd $HOME/Repos/<PROJECT_NAME>
