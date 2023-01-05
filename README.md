@@ -48,7 +48,12 @@ YOUR_PROJECT_NAME_DIRECOTRY
 
 Install the fCLI globally:
 
-- Download fCLI form github.com
+- Clone or Download fCLI form github.com
+
+```
+git clone https://github.com/pyravi26/fastCLI.git
+```
+
 - Go inside fCLI directory structure
 
 ```
@@ -65,7 +70,7 @@ or
 sh setup.sh $0
 ```
 
-This will setup the fCLI and verify it by showing the help topic of this command.
+This will setup the fCLI and verify the same, by showing/display the help topic/s.
 
 - In order to create a workspace:
 
@@ -74,7 +79,9 @@ fastCLI gp <PROJECT_NAME> --namespace=<PROJECT_NAMESPACE>
 ```
 This will create the directory $HOME/Repos/YOUR_PROJECT_NAME
 
-- Before run application you need to do some settings. To do settings go to directory $HOME/Repos/YOUR_PROJECT_NAME and open file  <PROJECT_NAMESPACE>.sh. In this file you have found multiple **export** and **<YOUR_DATABASE_*>**. Please replace **<YOUR_DATABASE_*>** with appropriate value/s:
+- Before run application you need to do some settings. To do settings go to your project directory i.e. **$HOME/Repos/YOUR_PROJECT_NAME** and open the file with name **<PROJECT_NAMESPACE>.sh**. 
+
+- In this file you have found multiple **export** command with **<YOUR_DATABASE_*>** tags. Please replace **<YOUR_DATABASE_*>** tags with appropriate value/s for it.
 
 ```
 export DB_NAME='<YOUR_DATABASE_NAME>'
