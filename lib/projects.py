@@ -11,7 +11,7 @@ class Projects():
         self.__name          = '-'.join(info.get_params[0].replace(r"([@_!#$%^&*()<>?/\|}{~:])", '').split(' '))
         self.__root_path     = f"{info.get_home_dir}/{self.__name}"
         self.__config_path   = f"{self.__root_path}/.fastcli.conf.json"
-        self.__required      = ['fastapi', 'pydantic', 'sqlalchemy', 'psycopg2', 'uvicorn']
+        self.__required      = ['fastapi', 'pydantic', 'sqlalchemy', 'psycopg2-binary', 'uvicorn']
         self.__project_info  = {
             "name": self.__name,
             "namespace": self.__args["namespace"],

@@ -23,7 +23,7 @@ class ${uc_name}Controller(object):
 
     def __init__(self, req: requests, DB: Session, tables: list):
         self._request = req
-        self._db = DB
+        self._db = DB()
         self._tables = tables
         self.__page_info = _page_information()
 
@@ -42,8 +42,11 @@ class ${uc_name}Controller(object):
 
 
     def setLimit(self, per_page: int):
-        if self.__page_info.offset == 0:
-            self.__page_info.limit = per_page
+        self.__page_info.limit = per_page
+    
+
+    def setRowCounts(self, count: int):
+        self.__page_info.row_count = count
 
 
     def send_error(self, msg: str | list) -> SendResponse:

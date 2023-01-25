@@ -21,4 +21,13 @@ for r in routers:
     mod = importlib.import_module(r)
     ${namespace}_app.include_router(getattr(mod, 'router')())
 
+def __schema():
+   ${namespace}.openapi_schema = get_openapi(
+       title="${namespace} Info API",
+       version="1.0",
+       routes=${namespace}.routes,
+   )
+   return ${namespace}.openapi_schema
+
+${namespace}.openapi = __schema
 Base.metadata.create_all(bind=engine)
