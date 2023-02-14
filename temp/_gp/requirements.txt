@@ -1,0 +1,8 @@
+fastapi
+aiofile
+python-multipart
+psycopg2-binary
+pydantic
+sqlalchemy
+filehash
+uvicorn

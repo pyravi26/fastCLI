@@ -1,0 +1,7 @@
+FROM python:3.11.1-alpine3.17
+WORKDIR /${namespace}
+COPY ./requirements.txt /${namespace}/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /${namespace}/requirements.txt
+ADD . .
+CMD ["uvicorn", "${namespace}_api:${namespace}_app", "--proxy-headers", "--reload", "--host", "0.0.0.0"]
+EXPOSE 8000

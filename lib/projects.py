@@ -42,7 +42,10 @@ class Projects():
             "helper": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/helper.txt")),
             "base_controller": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/controller.txt")),
             "base_validator": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/validator.txt")),
-            "initilize_route": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/initilize_route.txt"))
+            "initilize_route": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/initilize_route.txt")),
+            "requirement": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/requirements.txt")),
+            "dockerfile": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/dockerfile.txt")),
+            "dockercompose": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/dockercompose.txt")),
         }
     
 
@@ -85,7 +88,10 @@ class Projects():
                 {"name": f"{path}/api/lib/core/helpers.py", "template": self.__templates["helper"]},
                 {"name": f"{path}/api/lib/core/base_controller.py", "template": self.__templates["base_controller"]},
                 {"name": f"{path}/api/lib/core/validators/base_validator.py", "template": self.__templates["base_validator"]},
-                {"name": f"{path}/api/routers/__init__.py", "template": self.__templates["initilize_route"]}
+                {"name": f"{path}/api/routers/__init__.py", "template": self.__templates["initilize_route"]},
+                {"name": f"{path}/requirements.txt", "template": self.__templates["requirement"]},
+                {"name": f"{path}/Dockerfile", "template": self.__templates["dockerfile"]},
+                {"name": f"{path}/docker-compose.yml", "template": self.__templates["dockercompose"]}
             ]
 
             for f in __files:

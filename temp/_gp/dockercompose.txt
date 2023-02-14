@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  ${namespace}_pysql:
+    container_name: ${namespace}_pysql
+    image: "postgres:15.1-alpine3.17"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=${namespace}
+    volumes:
+      - "./postgres_db:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  ${namespace}:
+    container_name: ${namespace}_app
+    build: .
+    ports:
+      - "8080:8000"
+    environment:
+      - DB_DIALECT=postgresql
+      - DB_NAME=${namespace}
+      - DB_HOST=${namespace}_pysql
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - ALLOW_ORIGIN=http://localhost:*,http://0.0.0.0:*,http://127.0.0.1:*
+    depends_on:
+      ${namespace}_pysql:
+        condition: service_healthy
+    links: 
+        - ${namespace}_pysql
+    volumes:
+      - "./upload:/${namespace}/upload"
+      - ".:/${namespace}"

@@ -2,6 +2,7 @@ import importlib
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.utils import get_openapi
 
 from api.lib.core.helpers import ImporterList, get_env_value
 from api.routers import *
@@ -22,12 +23,12 @@ for r in routers:
     ${namespace}_app.include_router(getattr(mod, 'router')())
 
 def __schema():
-   ${namespace}.openapi_schema = get_openapi(
+   ${namespace}_app.openapi_schema = get_openapi(
        title="${namespace} Info API",
        version="1.0",
-       routes=${namespace}.routes,
+       routes=${namespace}_app.routes,
    )
-   return ${namespace}.openapi_schema
+   return ${namespace}_app.openapi_schema
 
-${namespace}.openapi = __schema
+${namespace}_app.openapi = __schema
 Base.metadata.create_all(bind=engine)
