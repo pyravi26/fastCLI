@@ -79,7 +79,13 @@ fastCLI gp <PROJECT_NAME> --namespace=<PROJECT_NAMESPACE>
 ```
 This will create the directory $HOME/Repos/YOUR_PROJECT_NAME. Inside this you can find **<PROJECT_NAMESPACE>.sh** file.
 
-To run the application simple run follow:
+**ARGUMENTS**
+
+* --namespace   Namespace of your project
+* --output      Output Directory where your file will be generated
+
+
+To run the application simple follow below instructions:
 
 - Go inside your project directory by running following command:
 
@@ -95,25 +101,25 @@ cd $HOME/Repos/<PROJECT_NAME>
 
 - Without a Docker, i.e. run your project standlaone and you need to setup **Database** separately
 
--- Please setup your **Postgres** Database by following instructions at https://www.postgresql.org/download/
+    * Please setup your **Postgres** Database by following instructions at https://www.postgresql.org/download/
 
--- Before running your application you need to do some settings. In order to do settings, please go to your project directory i.e. **$HOME/Repos/YOUR_PROJECT_NAME** and open the file with name **<PROJECT_NAMESPACE>.sh**. 
+    * Before running your application you need to do some settings. In order to do settings, please go to your project directory i.e. **$HOME/Repos/YOUR_PROJECT_NAME** and open the file with name **<PROJECT_NAMESPACE>.sh**. 
 
--- In this file you have found multiple **export** command with **<YOUR_DATABASE_*>** tags. Please replace **<YOUR_DATABASE_*>** tags with appropriate value/s for it.
+    * In this file you have found multiple **export** command with **<YOUR_DATABASE_*>** tags. Please replace **<YOUR_DATABASE_*>** tags with appropriate value/s for it.
 
-```
-export DB_NAME='<YOUR_DATABASE_NAME>'
-export DB_HOST='<YOUR_DATABASE_HOST>'
-export DB_PORT='<YOUR_DATABASE_PORT>'
-export DB_USER='<YOUR_DATABASE_USER_NAME>'
-export DB_PASS='<YOUR_DATABASE_PASSWORD>'
-```
+    ```
+    export DB_NAME='<YOUR_DATABASE_NAME>'
+    export DB_HOST='<YOUR_DATABASE_HOST>'
+    export DB_PORT='<YOUR_DATABASE_PORT>'
+    export DB_USER='<YOUR_DATABASE_USER_NAME>'
+    export DB_PASS='<YOUR_DATABASE_PASSWORD>'
+    ```
 
-- After this you can run your application by simply run the following command:
+    * After this you can run your application by simply run the following command:
 
-```
-./<PROJECT_NAMESPACE>.sh
-```
+    ```
+    ./<PROJECT_NAMESPACE>.sh
+    ```
 
 ### Create new Contorller
 
