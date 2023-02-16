@@ -65,6 +65,7 @@ class Projects():
         if self.__args["output"] is not None:
             path = f"{os.path.abspath(os.path.expanduser(self.__args['output']))}/{self.__name}"
             self.__project_info["root_dir"] = path
+            self.__config_path = f"{path}/.fastcli.conf.json"
         else:
             path = self.__root_path
         

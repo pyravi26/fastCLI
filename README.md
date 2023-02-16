@@ -77,11 +77,29 @@ This will setup the fCLI and verify the same, by showing/display the help topic/
 ```
 fastCLI gp <PROJECT_NAME> --namespace=<PROJECT_NAMESPACE>
 ```
-This will create the directory $HOME/Repos/YOUR_PROJECT_NAME
+This will create the directory $HOME/Repos/YOUR_PROJECT_NAME. Inside this you can find **<PROJECT_NAMESPACE>.sh** file.
 
-- Before run application you need to do some settings. To do settings go to your project directory i.e. **$HOME/Repos/YOUR_PROJECT_NAME** and open the file with name **<PROJECT_NAMESPACE>.sh**. 
+To run the application simple run follow:
 
-- In this file you have found multiple **export** command with **<YOUR_DATABASE_*>** tags. Please replace **<YOUR_DATABASE_*>** tags with appropriate value/s for it.
+- Go inside your project directory by running following command:
+
+```
+cd $HOME/Repos/<PROJECT_NAME>
+```
+
+- In order to run **DOCKER Container**, you can run the following command:
+
+```
+./<PROJECT_NAMESPACE>.sh -d
+```
+
+- Without a Docker, i.e. run your project standlaone and you need to setup **Database** separately
+
+-- Please setup your **Postgres** Database by following instructions at https://www.postgresql.org/download/
+
+-- Before running your application you need to do some settings. In order to do settings, please go to your project directory i.e. **$HOME/Repos/YOUR_PROJECT_NAME** and open the file with name **<PROJECT_NAMESPACE>.sh**. 
+
+-- In this file you have found multiple **export** command with **<YOUR_DATABASE_*>** tags. Please replace **<YOUR_DATABASE_*>** tags with appropriate value/s for it.
 
 ```
 export DB_NAME='<YOUR_DATABASE_NAME>'
@@ -91,10 +109,9 @@ export DB_USER='<YOUR_DATABASE_USER_NAME>'
 export DB_PASS='<YOUR_DATABASE_PASSWORD>'
 ```
 
-- To run the application:
+- After this you can run your application by simply run the following command:
 
 ```
-cd $HOME/Repos/<PROJECT_NAME>
 ./<PROJECT_NAMESPACE>.sh
 ```
 
