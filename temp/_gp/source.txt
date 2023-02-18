@@ -7,6 +7,7 @@ from fastapi.openapi.utils import get_openapi
 from api.lib.core.helpers import ImporterList, get_env_value
 from api.routers import *
 from api.database.db_connection import Base, engine
+from api.database.models import *
 
 ${namespace}_app = FastAPI()
 ${namespace}_app.add_middleware(

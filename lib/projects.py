@@ -86,6 +86,7 @@ class Projects():
                 {"name": f"{path}/{self.__args['namespace']}.sh", "template": self.__templates["shell"]},
                 {"name": f"{path}/{self.__args['namespace']}_api.py", "template": self.__templates["main"]},
                 {"name": f"{path}/api/database/db_connection.py", "template": self.__templates["connection"]},
+                {"name": f"{path}/api/database/models/__init__.py", "template": self.__templates["initilize_route"]},
                 {"name": f"{path}/api/lib/core/helpers.py", "template": self.__templates["helper"]},
                 {"name": f"{path}/api/lib/core/base_controller.py", "template": self.__templates["base_controller"]},
                 {"name": f"{path}/api/lib/core/validators/base_validator.py", "template": self.__templates["base_validator"]},
