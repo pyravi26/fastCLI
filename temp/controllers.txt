@@ -4,13 +4,13 @@
 from http import HTTPStatus
 from fastapi import Request
 from sqlalchemy.orm import Session
-from api.lib.core.base_controller import BaseController
-from api.lib.core.validators.base_validator import SendResponse
+from ${namespace}.lib.core.base_controller import BaseController
+from api.validators.base_validator import SendResponse
 
 
 class ${uc_name}Controller(BaseController):
 
-    def __init__(self, req: Request, DB: Session, tables: list):
+    def __init__(self, req: Request):
         super().__init__(req, DB, tables)
 
 

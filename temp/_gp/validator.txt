@@ -20,3 +20,12 @@ class SendResponse(BaseModel):
     pageinfo: PageInformation | None = None
     type: ResponseType = ResponseType.SUCCESS
     status: HTTPStatus = HTTPStatus.OK
+
+    def enum_dict(self):
+        return {
+            "data": self.data,
+            "message": self.message,
+            "pageinfo": self.pageinfo,
+            "type": self.type.value,
+            "status": self.status.value
+        }

@@ -6,3 +6,4 @@ pydantic
 sqlalchemy
 filehash
 uvicorn
+uuid

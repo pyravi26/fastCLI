@@ -1,20 +1,21 @@
 # Generated through FastCLI
 
 from datetime import datetime
-from api.database.db_connection import Base
-from sqlalchemy import Column, Integer, Boolean
-from sqlalchemy.types import DateTime
+from ${namespace}.database.db_connection import Base
+from sqlalchemy import ForeignKey, func
+from sqlalchemy.types import String, DateTime, BIGINT, BigInteger, Boolean
+from sqlalchemy.orm import mapped_column, Mapped
 
 class ${uc_name}Model(Base):
     __tablename__ = "${table_namespace}_${name}"
 
-    id = Column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     # Column 1 Details
     # Column 2 Details
     # Column 3 Details
     # ....
     # ....
     # ....
-    rec_status = Column(Boolean, server_default='true')
-    created_at = Column(DateTime(timezone=True), server_default=str(datetime.utcnow()))
-    modified_at = Column(DateTime(timezone=True), onupdate=str(datetime.utcnow()))
+    rec_status: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=func.now())
+    modified_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), onupdate=func.now())

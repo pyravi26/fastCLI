@@ -28,18 +28,24 @@ class FileGenerator(object):
             self._data = json.loads(self._info.get_decoder.read_file(f"{self._info.get_source_path}/.fastcli.conf.json"))
         
         return self._data
+    
+    def get_file_path(self, name: str) -> str:
+        return self.__get_data()['file_dirs'][name]
+
+    def load_file_path(self, name: str):
+        self._path = self.get_file_path(name)
 
     def generate(self):
         __name = str(self._name[0]).upper() + self._name[1:]
         if isdir(self._path) is True:
             for t in self._fandt:
-                namespace = self._info.get_table_namespace
-                if namespace is None:
-                    namespace = self.__get_data()["namespace"]
-                
                 self._info.get_decoder.write_file(
                     t["fname"], 
-                    t["template"].render(name=self._name, uc_name=__name, table_namespace=namespace)
+                    t["template"].render(
+                        name=self._name, uc_name=__name, 
+                        table_namespace=self._info.get_table_namespace, 
+                        namespace=self.__get_data()["namespace"]
+                    )
                 )
                 self.__update_config(t["fname"])
                 gen_log_messages(t["fname"])
