@@ -40,12 +40,12 @@ class Controllers(FileGenerator):
             })
         if __generate_module:
             self._fandt.append({
-                "fname": f"{self.get_file_path('models')}/{self._name}_validator.py",
+                "fname": f"{self.get_file_path('models')}/{self._name}_model.py",
                 "template": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/models.txt"))
             })
         if __generate_router:
             self._fandt.append({
-                "fname": f"{self.get_file_path('routers')}/{self._name}_validator.py",
+                "fname": f"{self.get_file_path('routers')}/{self._name}_router.py",
                 "template": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/routers.txt"))
             })
 

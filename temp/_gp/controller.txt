@@ -124,7 +124,7 @@ class ${uc_name}Controller(object):
         data: dict | list | None = None, 
         msg: str = None, 
         show_page_info: bool = False, 
-        code = HTTPStatus.OK
+        code = HTTPStatus.OK,
         cookies: dict | list | None = None
     ) -> SendResponse:
 
