@@ -16,15 +16,18 @@ The key features are:
 
 ## Directory Structure
 
-YOUR_PROJECT_NAME_DIRECOTRY
 - api
     - controllers
+        - // controller files
+    - routers
+        - // route files
+    - validators
+        - // pydantic validator files
+- PROJECT_DIRECTORY
     - database
-        - models
-            - // databse models define here
-        - validators
-            - // pydantic models define here
         - db_coonection.py
+    - models
+        - // databse models define here
     - i18n_translations
     - lib
         - core
@@ -32,7 +35,6 @@ YOUR_PROJECT_NAME_DIRECOTRY
                 - base_validator.py
             - base_controller.py
             - helpers.py
-    - routers
 - YOUR_NAMESPACE_api.py
 - YOUR_NAMESPACE.sh
 
@@ -63,11 +65,8 @@ cd fastCLI
 - Run the following command
 
 ```
-./setup.sh $0
+sudo ./setup.sh
 
-or
-
-sh setup.sh $0
 ```
 
 This will setup the fCLI and verify the same, by showing/display the help topic/s.
@@ -75,7 +74,7 @@ This will setup the fCLI and verify the same, by showing/display the help topic/
 - In order to create a workspace:
 
 ```
-fastCLI gp <PROJECT_NAME> --namespace=<PROJECT_NAMESPACE>
+fastCLI gp --namespace=<PROJECT_NAMESPACE>
 ```
 This will create the directory $HOME/Repos/YOUR_PROJECT_NAME. Inside this you can find **<PROJECT_NAMESPACE>.sh** file.
 
@@ -152,6 +151,10 @@ or
 fastCLI -router ROUTER_NAME [ARGUMENTS]
 ```
 
+**ARGUMENTS**
+
+* --module 
+* --validator
 
 ### Create new Module
 
