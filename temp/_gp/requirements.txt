@@ -1,9 +1,9 @@
-fastapi
-aiofile
-python-multipart
-psycopg2-binary
-pydantic
-sqlalchemy
+fastapi==0.109.2
+aiofile==3.8.8
+python-multipart==0.0.9
+psycopg2-binary==2.9.9
+pydantic==2.6.2
+sqlalchemy==2.0.27
 filehash
-uvicorn
+uvicorn==0.27.1
 uuid

@@ -1,6 +1,6 @@
 # Generated through FastCLI
 
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request, Depends, Query
 from api.controllers.${name}_controller import ${uc_name}Controller
 from ${namespace}.models.${name}_model import ${uc_name}Model
 from api.validators.${name}_validator import *
@@ -16,12 +16,26 @@ def router() -> APIRouter:
 
 
 @${name}_router.get('/${name}/list', tags=["${uc_name}s"], response_model=SendResponse)
-def ${name}_list(req: Request, page_no: int, limit: int, db: Session = Depends(get_connection)):
+def ${name}_list(req: Request, page_no: int=Query(1), limit: int=Query(10), db: Session = Depends(get_connection)):
     resp: SendResponse = None
     ctrl = ${uc_name}Controller(req, db, [${uc_name}Model])
 
     try:
         resp = ctrl.get_list(page_no, limit)
+
+    except Exception as e:
+        resp = ctrl.send_error(e.args[0])
+
+    return resp
+
+
+@${name}_router.get('/${name}', tags=["${uc_name}s"], response_model=SendResponse)
+def get_${name}(req: Request, ${name}_id: int, db: Session = Depends(get_connection)):
+    resp: SendResponse = None
+    ctrl = ${uc_name}Controller(req, db, [${uc_name}Model])
+
+    try:
+        resp = ctrl.get_item(${name}_id)
 
     except Exception as e:
         resp = ctrl.send_error(e.args[0])
@@ -58,7 +72,7 @@ def ${name}_update(req: Request, ${name}: ${uc_name}Update, db: Session = Depend
 
 
 @${name}_router.delete('/${name}', tags=["${uc_name}s"], response_model=SendResponse)
-def ${name}_list(req: Request, ${name}_id: ${uc_name}Delete, db: Session = Depends(get_connection)):
+def ${name}_delete(req: Request, ${name}_id: ${uc_name}Delete, db: Session = Depends(get_connection)):
     resp: SendResponse = None
     ctrl = ${uc_name}Controller(req, db, [${uc_name}Model])
 
