@@ -3,15 +3,18 @@
 
 from http import HTTPStatus
 from fastapi import Request
+from sqlalchemy import select
 from sqlalchemy.orm import Session
-from api.lib.core.base_controller import BaseController
-from api.lib.core.validators.base_validator import SendResponse
+from ${namespace}.lib.core.base_controller import BaseController
+from ${namespace}.models.${name}_model import ${uc_name}Model
+from api.validators.base_validator import SendResponse
 
 
 class ${uc_name}Controller(BaseController):
 
-    def __init__(self, req: Request, DB: Session, tables: list):
+    def __init__(self, req: Request, DB: Session, tables: list = None):
         super().__init__(req, DB, tables)
+        # self.__model = ${uc_name}Model
 
 
     def get_list(self, page_no: int, limit: int) -> SendResponse:
@@ -23,6 +26,12 @@ class ${uc_name}Controller(BaseController):
         '''
 
         return self.send_success([], show_page_info=True)
+    
+
+    def get_item(self, ${name}_id: int):
+        # db_row = self._db.scalars(select(self.__model).where(self.__model.id == ${name}_id)).first()
+        
+        return self.send_success({})
 
 
     def create(self, post_data: dict) -> SendResponse:

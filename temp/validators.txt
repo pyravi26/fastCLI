@@ -13,7 +13,7 @@ class ${uc_name}Create(BaseModel):
     # ....
 
     class Config:
-        orm_mode = True
+        form_attributes = True
 
 
 class ${uc_name}Update(${uc_name}Create):
@@ -24,7 +24,7 @@ class ${uc_name}Delete(BaseModel):
     id: int = Field(alias="${name}_id")
 
     class Config:
-        orm_mode = True
+        form_attributes = True
 
 
 

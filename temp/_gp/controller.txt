@@ -1,8 +1,13 @@
 import math
 from os import environ
-from fastapi import requests
+from datetime import datetime
+from email.utils import format_datetime
+from fastapi import Request
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from api.lib.core.validators.base_validator import *
+from api.validators.base_validator import ResponseType
+from api.validators.base_validator import SendResponse
+from api.validators.base_validator import HTTPStatus
 
 
 class _page_information(object):
@@ -21,9 +26,9 @@ class _page_information(object):
 
 class ${uc_name}Controller(object):
 
-    def __init__(self, req: requests, DB: Session, tables: list):
+    def __init__(self, req: Request, DB: Session = None, tables: list = None):
         self._request = req
-        self._db = DB()
+        self._db = DB() if DB is not None else (req.state.DB() if hasattr(req.state, 'DB') else None)
         self._tables = tables
         self.__page_info = _page_information()
 
@@ -31,8 +36,65 @@ class ${uc_name}Controller(object):
 
 
     @property
+    def DBEngine(self) -> Session:
+        return self._db
+        
+    
+    @property
     def get_page_information(self):
         return self.__page_info.__dict__()
+
+    
+    @property
+    def GetClientIPAddress(self) -> str:
+        return self._request.client.host
+
+
+    @property
+    def get_device(self) -> str:
+        return self._request.cookies.get('device_id')
+
+    
+    @property
+    def SessionUserInfo(self) -> dict:
+        return self._request.state.user
+
+    
+    def __cookie(self, cookie: dict, _c: dict = None) -> dict:
+        if 'key' in cookie and 'value' in cookie:
+            _c = {"key": "device_id", "value": cookie['value']}
+            
+            if 'max_age' in cookie and cookie['max_age'] is not None:
+                _c["max-age"] = cookie['max_age']
+            if 'expires' in cookie and cookie['expires'] is not None:
+                if isinstance(cookie['expires'], datetime):
+                    _c["expires"] = format_datetime(cookie['expires'], usegmt=True)
+                else:
+                    _c["expires"] = cookie['expires']
+            
+            if 'path' in cookie and cookie['path'] is not None:
+                _c["path"] = cookie['path']
+            if 'domain' in cookie and cookie['domain'] is not None:
+                _c["domain"] = cookie['domain']
+            if 'secure' in cookie and cookie['secure']:
+                _c["secure"] = True
+            if 'httponly' in cookie and cookie['httponly']:
+                _c["httponly"] = True
+            if 'samesite' in cookie and cookie['samesite'] is not None:
+                assert cookie['samesite'].lower() in [
+                    "strict",
+                    "lax",
+                    "none",
+                ], "samesite must be either 'strict', 'lax' or 'none'"
+                _c["samesite"] = cookie['samesite']
+        return _c
+
+    
+    def __set_cookies(self, cookies:dict|list, resp: JSONResponse) -> None:
+        if isinstance(cookies, dict) is True:
+            resp.set_cookie(**self.__cookie(cookies))
+        elif isinstance(cookies, list) is True:
+            (resp.set_cookie(**self.__cookie(c)) for c in cookies)
 
     
     def setPageNo(self, curr_page: int):
@@ -57,7 +119,16 @@ class ${uc_name}Controller(object):
         return self._response
 
 
-    def send_success(self, data: dict | list = None, msg: str = None, show_page_info: bool = False, code = HTTPStatus.OK) -> SendResponse:
+    def send_success(
+        self, 
+        data: dict | list | None = None, 
+        msg: str = None, 
+        show_page_info: bool = False, 
+        code = HTTPStatus.OK,
+        cookies: dict | list | None = None
+    ) -> SendResponse:
+
+        _resp = None
         self._response.data = data
         self._response.message = msg
         if show_page_info is True:
@@ -66,5 +137,12 @@ class ${uc_name}Controller(object):
         self._response.type = ResponseType.SUCCESS
         self._response.status = code
 
-        return self._response
+        if cookies is not None:
+            _resp = JSONResponse(self._response.enum_dict())
+            self.__set_cookies(cookies, _resp)
+        
+        else:
+            _resp = JSONResponse(self._response.enum_dict())
+
+        return _resp
     

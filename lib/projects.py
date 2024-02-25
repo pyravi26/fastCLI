@@ -8,7 +8,7 @@ class Projects():
     def __init__(self, info: DataInfo):
         self.__info          = info
         self.__args          = info.get_parse_args
-        self.__name          = '-'.join(info.get_params[0].replace(r"([@_!#$%^&*()<>?/\|}{~:])", '').split(' '))
+        self.__name          = '-'.join(info.get_name.replace(r"([@_!#$%^&*()<>?/\|}{~:])", '').split(' '))
         self.__root_path     = f"{info.get_home_dir}/{self.__name}"
         self.__config_path   = f"{self.__root_path}/.fastcli.conf.json"
         self.__required      = ['fastapi', 'pydantic', 'sqlalchemy', 'psycopg2-binary', 'uvicorn']
@@ -17,6 +17,7 @@ class Projects():
             "namespace": self.__args["namespace"],
             "root_dir": self.__root_path,
             "config_file": self.__config_path,
+            "file_dirs": {},
             "required": self.__required,
             "default_files": [],
             "other_files": {
@@ -35,17 +36,22 @@ class Projects():
         if self.__args['namespace'] is None or self.__args['namespace'].strip() == '':
             raise Exception("Please provide namespace.")
 
-        self.__templates = {
-            "shell": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/executer.txt")), 
-            "main": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/source.txt")),
-            "connection": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/connection.txt")),
-            "helper": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/helper.txt")),
-            "base_controller": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/controller.txt")),
-            "base_validator": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/validator.txt")),
-            "initilize_route": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/initilize_route.txt")),
-            "requirement": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/requirements.txt")),
-            "dockerfile": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/dockerfile.txt")),
-            "dockercompose": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/dockercompose.txt")),
+        self.__project_files = {
+            "setup": [
+                {"name": f"{self.__args['namespace']}.sh", "template": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/executer.txt"))},
+                {"name": f"{self.__args['namespace']}_api.py", "template": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/source.txt"))},
+                {"name": "requirements.txt", "template": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/requirements.txt"))},
+                {"name": "Dockerfile", "template": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/dockerfile.txt"))},
+                {"name": "docker-compose.yml", "template": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/dockercompose.txt"))},
+            ],
+            "database": {"name": "db_connection.py", "template": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/connection.txt"))},
+            "models": {"name": "__init__.py", "template": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/initilize_route.txt"))},
+            "core": [
+                {"name": "helpers.py", "template": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/helper.txt"))},
+                {"name": "base_controller.py", "template": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/controller.txt"))}
+            ],
+            "validators": {"name": "base_validator.py", "template": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/validator.txt"))},
+            "routers": {"name": f"__init__.py", "template": Template(info.get_decoder.get_pathdata(f"{info.get_current_path}/templates/_gp/initilize_route.txt"))},
         }
     
 
@@ -59,6 +65,20 @@ class Projects():
         sp_run_args = f"cd {output} && python{self.__get_version()} -m venv {self.__name}_env && source {self.__name}_env/bin/activate && pip install {' '.join(self.__required)}"
         p = subprocess.Popen(sp_run_args, shell=True)
         p.wait()
+
+    
+    def __get_project_files(self, path: str) -> list:
+        __files = []
+        for pf in self.__project_files["setup"]:
+            pf["name"] = f"{path}/{pf['name']}"
+        
+        for pf in self.__project_files:
+            if isinstance(self.__project_files[pf], list):
+                __files.extend(self.__project_files[pf])
+            else:
+                __files.append(self.__project_files[pf])
+        
+        return __files
 
 
     def gen_projects(self):
@@ -80,23 +100,18 @@ class Projects():
                 if s['parent'] is not None:
                     _path = f"{path}/{s['parent']}/{s['name']}"
 
+                self.__project_info['file_dirs'][s['name']] = _path
+                if s['name'] in self.__project_files:
+                    if isinstance(self.__project_files[s['name']], list):
+                        for f in self.__project_files[s['name']]:
+                            f['name'] = f"{_path}/{f['name']}"
+                    else:
+                        self.__project_files[s['name']]['name'] = f"{_path}/{self.__project_files[s['name']]['name']}"
+
                 os.makedirs(_path)
-
-            __files = [
-                {"name": f"{path}/{self.__args['namespace']}.sh", "template": self.__templates["shell"]},
-                {"name": f"{path}/{self.__args['namespace']}_api.py", "template": self.__templates["main"]},
-                {"name": f"{path}/api/database/db_connection.py", "template": self.__templates["connection"]},
-                {"name": f"{path}/api/database/models/__init__.py", "template": self.__templates["initilize_route"]},
-                {"name": f"{path}/api/lib/core/helpers.py", "template": self.__templates["helper"]},
-                {"name": f"{path}/api/lib/core/base_controller.py", "template": self.__templates["base_controller"]},
-                {"name": f"{path}/api/lib/core/validators/base_validator.py", "template": self.__templates["base_validator"]},
-                {"name": f"{path}/api/routers/__init__.py", "template": self.__templates["initilize_route"]},
-                {"name": f"{path}/requirements.txt", "template": self.__templates["requirement"]},
-                {"name": f"{path}/Dockerfile", "template": self.__templates["dockerfile"]},
-                {"name": f"{path}/docker-compose.yml", "template": self.__templates["dockercompose"]}
-            ]
-
-            for f in __files:
+            
+            project_files = self.__get_project_files(path)
+            for f in project_files:
                 self.__info.get_decoder.write_file(f['name'], f['template'].render(
                     namespace=self.__args['namespace'], name=self.__name, ex_path=path, uc_name='Base',
                     blank_space=''

@@ -37,13 +37,13 @@ if __name__ == '__main__':
                 if info.get_command == '-controller' or info.get_command == 'gc':
                     Controllers(info).generate() #.gen_controllers()
                 
-                if info.get_command == '-router' or info.get_command == 'gr' or info.get_parse_args["router"] is True:
+                if info.get_command == '-router' or info.get_command == 'gr':
                     Routers(info).generate()
                 
-                if info.get_command == '-model' or info.get_command == 'gm' or info.get_parse_args["module"] is True:
+                if info.get_command == '-model' or info.get_command == 'gm':
                     Models(info).generate()
 
-                if info.get_command == '-validator' or info.get_command == 'gv' or info.get_parse_args["validator"] is True:
+                if info.get_command == '-validator' or info.get_command == 'gv':
                     Validators(info).generate()
             
             else:
@@ -52,7 +52,7 @@ if __name__ == '__main__':
         exit(0)
     
     except Exception as e:
-        print("\n")
+        logger.info("\n")
         logger.error(e.args[0])
-        print('\n')
+        logger.info('\n')
         exit(1)

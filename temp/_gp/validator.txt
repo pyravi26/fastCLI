@@ -1,6 +1,6 @@
 import enum
 from http import HTTPStatus
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ResponseType(enum.Enum):
@@ -9,9 +9,9 @@ class ResponseType(enum.Enum):
 
 
 class PageInformation(BaseModel):
-    current_page: int
-    total_pages: int
-    page_limit: int
+    current_page: int = Field(default=1)
+    total_pages: int = Field(default=1)
+    page_limit: int = Field(default=10)
 
 
 class SendResponse(BaseModel):
@@ -20,3 +20,12 @@ class SendResponse(BaseModel):
     pageinfo: PageInformation | None = None
     type: ResponseType = ResponseType.SUCCESS
     status: HTTPStatus = HTTPStatus.OK
+
+    def enum_dict(self):
+        return {
+            "data": self.data,
+            "message": self.message,
+            "pageinfo": self.pageinfo,
+            "type": self.type.value,
+            "status": self.status.value
+        }

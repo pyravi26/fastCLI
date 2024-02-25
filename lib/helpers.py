@@ -7,7 +7,7 @@ HELP_DATA = {
         "Bootstrap Project", "Generate Controller", "Generate Routers",
         "Generate Model (Postgres DB Model and Its Pydantic Validator)"
     ],
-    "basic_command": "fastapi-cli COMMAND [OPTIONS] [ARGUMENTS] --output=PATH_OF_OUTPUT",
+    "basic_command": "fastCLI COMMAND [OPTIONS] [ARGUMENTS] --output=PATH_OF_OUTPUT",
     "commands": [
         {
             "name": "-project", "slug": "gp", "options": ["--namespace"],
@@ -21,12 +21,12 @@ HELP_DATA = {
 }
 
 def complete_help():
-    print("\n\n*************************************************************************************")
-    print("\n\tWelcome to FastAPI CLI. Through CLI interface you can: \n")
+    print("\n\n*****************************************************************************************************")
+    print("\n\tWelcome to FastCLI Bootstrapper Help. You can use any of the following commands: \n")
     print("\t -", "\n\t - ".join(HELP_DATA['baisc']), "\n")
-    print("*************************************************************************************\n\n")
+    print("*****************************************************************************************************\n\n")
     print(HELP_DATA["basic_command"])
-    print("COMMANDS: \n")
+    print("\nCOMMANDS: \n")
     for d in HELP_DATA["commands"]:
         print(f"\t{d['slug']}, {d['name']}\t\t{d['description']}")
         if "options" in d:
@@ -144,6 +144,7 @@ class DataInfo(object):
         self.__params = args[2:]
         self.__curr_path = os.path.abspath(path)
         self.__lac = lac
+        self.__config_file = f"{self.__curr_path}/.fastcli.conf.json"
         self.__parse_args = ParseArgs(args).parse({
             "namespace": None,
             "output": None,
@@ -159,12 +160,20 @@ class DataInfo(object):
         return self.__lac
 
     @property
+    def get_config_file(self):
+        return f'{self.__parse_args["source"]}/.fastcli.conf.json'
+
+    @property
     def get_current_path(self):
         return self.__curr_path
 
     @property
     def get_command(self):
         return self.__command.strip().lower()
+    
+    @property
+    def get_name(self):
+        return self.__params[0].split('=')[1]
 
     @property
     def get_params(self):
@@ -184,19 +193,23 @@ class DataInfo(object):
 
     @property
     def get_table_namespace(self):
-        return self.__parse_args["table_namespace"]
+        tn = self.__parse_args["table_namespace"]
+        if not tn:
+            tn = self.__parse_args["namespace"]
+        
+        return tn
     
     @property
     def get_dir_structure(self):
         return [
             {"name": "api", "parent": None},
+            {"name": self.__parse_args["namespace"], "parent": None},
             {"name": "controllers", "parent": "api"},
-            {"name": "database", "parent": "api"},
-            {"name": "models", "parent": "api/database"},
-            {"name": "validators", "parent": "api/database"},
-            {"name": "i18n_translations", "parent": "api"},
-            {"name": "lib", "parent": "api"},
-            {"name": "core", "parent": "api/lib"},
-            {"name": "validators", "parent": "api/lib/core"},
-            {"name": "routers", "parent": "api"}
+            {"name": "routers", "parent": "api"},
+            {"name": "validators", "parent": "api"},
+            {"name": "database", "parent": self.__parse_args["namespace"]},
+            {"name": "models", "parent": self.__parse_args["namespace"]},
+            {"name": "i18n_translations", "parent": self.__parse_args["namespace"]},
+            {"name": "lib", "parent": self.__parse_args["namespace"]},
+            {"name": "core", "parent": f"{self.__parse_args['namespace']}/lib"}
         ]
