@@ -1,10 +1,11 @@
-import math
+import math, json
 from os import environ
 from datetime import datetime
 from email.utils import format_datetime
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
+from sqlalchemy import select, func
 from api.validators.base_validator import ResponseType
 from api.validators.base_validator import SendResponse
 from api.validators.base_validator import HTTPStatus
@@ -26,10 +27,10 @@ class _page_information(object):
 
 class ${uc_name}Controller(object):
 
-    def __init__(self, req: Request, DB: Session = None, tables: list = None):
+    def __init__(self, req: Request, DB: Session = None, tables: list|dict = None):
         self._request = req
-        self._db = DB() if DB is not None else (req.state.DB() if hasattr(req.state, 'DB') else None)
-        self._tables = tables
+        self.__db = DB() if DB is not None else (req.state.DB() if hasattr(req.state, 'DB') else None)
+        self.__tables = tables
         self.__page_info = _page_information()
 
         self._response = SendResponse()
@@ -37,7 +38,7 @@ class ${uc_name}Controller(object):
 
     @property
     def DBEngine(self) -> Session:
-        return self._db
+        return self.__db
         
     
     @property
@@ -97,6 +98,27 @@ class ${uc_name}Controller(object):
             (resp.set_cookie(**self.__cookie(c)) for c in cookies)
 
     
+    def __get_hybrid_properties_value(self, obj, key_list: list = []):
+        data = {}
+        if not key_list or (key_list and len(key_list) == 0):
+            return data
+        
+        for ef in key_list:
+            if getattr(obj, ef):
+                data[ef] = getattr(obj, ef)
+        
+        return data
+
+    
+    def __get_decoded_column(self, obj, key_list: list = []):
+        if (key_list and len(key_list) > 0):
+            for kl in key_list:
+                if obj and obj[kl] and isinstance(obj[kl], str):
+                    obj[kl] = json.loads(obj[kl])
+        
+        return obj
+
+    
     def setPageNo(self, curr_page: int):
         self.__page_info.page = curr_page
         if self.__page_info.page > 1:
@@ -107,7 +129,8 @@ class ${uc_name}Controller(object):
         self.__page_info.limit = per_page
     
 
-    def setRowCounts(self, count: int):
+    def setRowCounts(self, query):
+        count = self.__db.execute(select(func.count()).select_from(query)).scalar()
         self.__page_info.row_count = count
 
 
@@ -145,4 +168,43 @@ class ${uc_name}Controller(object):
             _resp = JSONResponse(self._response.enum_dict())
 
         return _resp
+
     
+    def get_model(self, model_name: str):
+        return self.__tables[model_name] if model_name in self.__tables else None
+
+
+    def get_parsed_data(self, pydantic_model, data, hybrid_properties: list = [], json_column: list = []) -> dict | list | None:
+        if not data:
+            return None
+        
+        return_data = None
+        if isinstance(data, list) and data[0]:
+            data_ = []
+            for d in data:
+                _d = (d.__dict__)
+                _d.update(self.__get_hybrid_properties_value(d, hybrid_properties))
+                hp = json.loads(pydantic_model(**_d).model_dump_json())
+                hp = self.__get_decoded_column(hp, json_column)
+                data_.append(hp)
+            
+            return_data = data_
+        else:
+            json_data = {}
+            data_keys = data.__dict__.keys()
+            if len(data_keys) == 1 and '_sa_instance_state' in data_keys:
+                data_keys = data.__table__.columns
+                for c in data_keys:
+                    _key = c.key if not c.primary_key else 'id'
+                    json_data[_key] = getattr(data, _key)
+            else:
+                json_data = data.__dict__
+            
+            json_data.update(self.__get_hybrid_properties_value(data, hybrid_properties))
+            hp = json.loads((pydantic_model(**json_data).model_dump_json()))
+            return_data = self.__get_decoded_column(hp, json_column)
+        
+        if not return_data:
+            return_data = [] if isinstance(data, list) else {}
+
+        return return_data
