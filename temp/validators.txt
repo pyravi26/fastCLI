@@ -28,7 +28,7 @@ class ${uc_name}Delete(BaseModel):
 
 
 
-class ${uc_name}List(${uc_name}Create):
+class ${uc_name}List(BaseModel):
     id: int = Field(alias="${name}_id")
     rec_status: str | int = Field(alias="status")
     created_at: datetime | str | None = None
