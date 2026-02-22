@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [[ "$1" == "-d" ]]; then
+if [ "$1" = "-d" ]; then
     echo "Running Docker Compose..."
     
     docker compose up --build
@@ -16,5 +16,5 @@ else
     export DB_PASS=postgres
     export ALLOW_ORIGIN=http://localhost:*,http://0.0.0.0:*,http://127.0.0.1:*
 
-    cd ${ex_path} && source ${name}_env/bin/activate && uvicorn ${namespace}_api:${namespace}_app --reload
+    cd ${ex_path} && . ${name}_env/bin/activate && uvicorn ${namespace}_api:${namespace}_app --reload
 fi

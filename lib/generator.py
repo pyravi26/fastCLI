@@ -19,7 +19,7 @@ class FileGenerator(object):
         data  = self.__get_data()
         data["other_files"][cname].append({
             "name": fname,
-            "created": str(datetime.datetime.utcnow())
+            "created": str(datetime.datetime.now(datetime.timezone.utc))
         })
         self._info.get_decoder.write_file(f"{self._info.get_source_path}/.fastcli.conf.json", json.dumps(data))
 

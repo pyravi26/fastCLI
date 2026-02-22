@@ -10,7 +10,7 @@ from lib.validator import *
 
 FORMAT = '%(asctime)s, %(levelname)s IN FILE: %(name)s, MSG: %(message)s'
 logger = logging.getLogger(__name__)
-logging.basicConfig(format=FORMAT, datefmt="%Y-%m-%d %H:%M:%S")
+logging.basicConfig(level=logging.DEBUG, format=FORMAT, datefmt="%Y-%m-%d %H:%M:%S")
 
 if __name__ == '__main__':
     curr_path = os.path.dirname(__file__)
@@ -52,7 +52,8 @@ if __name__ == '__main__':
         exit(0)
     
     except Exception as e:
+        import traceback
         logger.info("\n")
-        logger.error(e.args[0])
+        logger.error(traceback.format_exc())
         logger.info('\n')
         exit(1)

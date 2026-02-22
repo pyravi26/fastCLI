@@ -16,11 +16,11 @@ class Controllers(FileGenerator):
         for p in info.get_params:
             if p.lower().find('--') == -1:
                 self._name = p
-            elif p.lower().find('--validator') > -1:
+            elif p.lower() == '--validator':
                 __generate_validator = True
-            elif p.lower().find('--module') > -1:
+            elif p.lower() == '--module':
                 __generate_module = True
-            elif p.lower().find('--router') > -1:
+            elif p.lower() == '--router':
                 __generate_router = True
         
         if not self._name:

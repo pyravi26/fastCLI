@@ -1,5 +1,5 @@
-import os, subprocess, json
-from datetime import datetime
+import os, subprocess, json, re
+from datetime import datetime, timezone
 from lib.helpers import DataInfo, run_help
 from mako.template import Template
 from platform import python_version
@@ -8,7 +8,7 @@ class Projects():
     def __init__(self, info: DataInfo):
         self.__info          = info
         self.__args          = info.get_parse_args
-        self.__name          = '-'.join(info.get_name.replace(r"([@_!#$%^&*()<>?/\|}{~:])", '').split(' '))
+        self.__name          = '-'.join(re.sub(r"[@_!#$%^&*()<>?/\|}{~:;`'\"]", "", info.get_name).split(' '))
         self.__root_path     = f"{info.get_home_dir}/{self.__name}"
         self.__config_path   = f"{self.__root_path}/.fastcli.conf.json"
         self.__required      = ['fastapi', 'pydantic', 'sqlalchemy', 'psycopg2-binary', 'uvicorn']
@@ -62,7 +62,7 @@ class Projects():
 
 
     def __do_installation(self, output: str):
-        sp_run_args = f"cd {output} && python{self.__get_version()} -m venv {self.__name}_env && source {self.__name}_env/bin/activate && pip install {' '.join(self.__required)}"
+        sp_run_args = f"cd {output} && python{self.__get_version()} -m venv {self.__name}_env && . {self.__name}_env/bin/activate && pip install {' '.join(self.__required)}"
         p = subprocess.Popen(sp_run_args, shell=True)
         p.wait()
 
@@ -108,7 +108,7 @@ class Projects():
                     else:
                         self.__project_files[s['name']]['name'] = f"{_path}/{self.__project_files[s['name']]['name']}"
 
-                os.makedirs(_path)
+                os.makedirs(_path, exist_ok=True)
             
             project_files = self.__get_project_files(path)
             for f in project_files:
@@ -118,7 +118,7 @@ class Projects():
                 ))
                 self.__project_info["default_files"].append({
                     "name": f['name'].replace(path, ''),
-                    "created": str(datetime.utcnow())
+                    "created": str(datetime.now(timezone.utc))
                 })
             
             self.__info.get_decoder.write_file(self.__config_path, json.dumps(self.__project_info))

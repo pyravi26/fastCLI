@@ -173,7 +173,9 @@ class DataInfo(object):
     
     @property
     def get_name(self):
-        return self.__params[0].split('=')[1]
+        if "=" in self.__params[0]:
+            return self.__params[0].split('=')[1]
+        return self.__params[0]
 
     @property
     def get_params(self):
@@ -185,7 +187,9 @@ class DataInfo(object):
 
     @property
     def get_source_path(self):
-        return self.__parse_args["source"]
+        if self.__parse_args["source"]:
+            return self.__parse_args["source"]
+        return os.getcwd()
     
     @property
     def get_parse_args(self):

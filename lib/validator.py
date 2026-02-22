@@ -12,7 +12,7 @@ class Validators(FileGenerator):
         for p in info.get_params:
             if p.lower().find('--') == -1:
                 self._name = p
-            else:
+            elif p.lower() == '--validator':
                 __generate_validator = True
         
         if not self._name:
